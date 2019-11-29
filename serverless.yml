@@ -1,0 +1,69 @@
+# For full config options, check the docs:
+#    docs.serverless.com
+
+service: email-diff
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+
+provider:
+  name: aws
+  runtime: ruby2.5
+  region: us-east-2
+  stage: default
+  timeout: 30
+
+# you can add statements to the Lambda function's IAM Role here
+#  iamRoleStatements:
+#    - Effect: "Allow"
+#      Action:
+#        - "s3:ListBucket"
+#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
+#    - Effect: "Allow"
+#      Action:
+#        - "s3:PutObject"
+#      Resource:
+#        Fn::Join:
+#          - ""
+#          - - "arn:aws:s3:::"
+#            - "Ref" : "ServerlessDeploymentBucket"
+#            - "/*"
+
+# you can add packaging information here
+package:
+  include:
+    - lib/**
+#  exclude:
+#    - exclude-me.py
+#    - exclude-me-dir/**
+
+functions:
+  email-diff:
+    handler: lib/email_diff.EmailDiff.call
+    events:
+      - http:
+          path: email-diff/{id}
+          method: any
+    environment:
+      ENV: production
+      FAUNA_DB_KEY: ${env:FAUNA_DB_KEY}
+      FROM_EMAIL: ${env:FROM_EMAIL}
+      MAILGUN_DOMAIN: ${env:MAILGUN_DOMAIN}
+      MAILGUN_API_KEY: ${env:MAILGUN_API_KEY}
+      RECIPIENTS: ${env:RECIPIENTS}
+      SENTRY_DSN: ${env:SENTRY_DSN}
+
+plugins:
+  - serverless-ruby-package
+
+#resources:
+#  Resources:
+#    NewResource:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        BucketName: my-new-bucket
+#  Outputs:
+#     NewOutput:
+#       Description: "Description for the output"
+#       Value: "Some output value"
