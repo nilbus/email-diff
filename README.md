@@ -3,6 +3,8 @@ email-diff
 
 Get weekly newsletters that only differ slightly, e.g. with a list of upcoming events? Forward your emails to email-diff, and it will reply with differences highlighted.
 
+As of Jan 2020, this service runs well within the perpetually-free tiers of the hosting services it uses.
+
 Dependencies
 ------------
 
